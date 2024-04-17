@@ -27,6 +27,8 @@ public class AuthorizationConfiguration {
 		http.authorizeHttpRequests(authorize-> authorize
 				.requestMatchers("/account/register")
 					.permitAll()
+				.requestMatchers(HttpMethod.GET,"/account/recovery/**")
+					.permitAll()
 				.requestMatchers("/account/user/{email}/role/{role}") 
 					.hasRole(Role.ADMINISTRATOR.name())
 				.requestMatchers(HttpMethod.PUT, "/account/user/{email}")

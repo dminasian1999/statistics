@@ -2,6 +2,7 @@ package telran.java51.accounting.controller;
 
 import java.util.Base64;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
@@ -26,7 +28,6 @@ import telran.java51.accounting.service.UserAccountService;
 public class UserAccountController {
 
 	final UserAccountService userAccountService;
-	final PasswordResetToken passwordResetToken;
 
 	@PostMapping("/register")
 	public UserDto register(@RequestBody UserRegisterDto userRegisterDto) {
@@ -63,6 +64,18 @@ public class UserAccountController {
 	@DeleteMapping("/user/{email}/role/{role}")
 	public RolesDto deleteRole(@PathVariable String email, @PathVariable String role) {
 		return userAccountService.changeRolesList(email, role, false);
+	}
+	
+	@GetMapping("/recovery/{email}")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void recoveryPasswordLink(@PathVariable String email) {
+		 userAccountService.generateToken(email);
+	}
+	
+	@PostMapping("/recovery/{token}")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void recoveryPassword(@PathVariable String token, @RequestHeader("X-Password") String newPassword) {
+		 userAccountService.changePasswordByToken(token, newPassword);
 	}
 
 }
