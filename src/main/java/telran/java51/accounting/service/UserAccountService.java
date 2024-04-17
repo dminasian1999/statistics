@@ -8,8 +8,10 @@ import telran.java51.accounting.dto.UserRegisterDto;
 public interface UserAccountService {
 
 	UserDto register(UserRegisterDto userRegisterDto);
-	
-	
+
+	void recoveryPasswordLink(String email);
+
+	void recoveryPassword(String email);
 
 	UserDto removeUser(String email);
 

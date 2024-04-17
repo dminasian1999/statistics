@@ -25,7 +25,7 @@ public class AuthorizationConfiguration {
 		http.csrf(csrf -> csrf.disable());
 		http.sessionManagement(session ->session.sessionCreationPolicy(SessionCreationPolicy.ALWAYS));
 		http.authorizeHttpRequests(authorize-> authorize
-				.requestMatchers("/account/register")
+				.requestMatchers("/account/register","/account/recovery")
 					.permitAll()
 				.requestMatchers("/account/user/{email}/role/{role}") 
 					.hasRole(Role.ADMINISTRATOR.name())
@@ -33,7 +33,6 @@ public class AuthorizationConfiguration {
 					.access(new WebExpressionAuthorizationManager("#email == authentication.name"))
 				.requestMatchers(HttpMethod.DELETE, "/account/user/{email}")
 					.access(new WebExpressionAuthorizationManager("#email == authentication.name or hasRole('ADMINISTRATOR')"))
-		
 				.anyRequest()
 					.authenticated()
 		);

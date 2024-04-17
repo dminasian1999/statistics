@@ -1,5 +1,7 @@
 package telran.java51.accounting.service;
 
+import java.util.UUID;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -7,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 import telran.java51.accounting.dao.UserAccountRepository;
+import telran.java51.accounting.dao.UserTokenRepository;
 import telran.java51.accounting.dto.RolesDto;
 import telran.java51.accounting.dto.UserDto;
 import telran.java51.accounting.dto.UserEditDto;
@@ -14,12 +17,14 @@ import telran.java51.accounting.dto.UserRegisterDto;
 import telran.java51.accounting.dto.exceptions.UserExistsException;
 import telran.java51.accounting.dto.exceptions.UserNotFoundException;
 import telran.java51.accounting.model.UserAccount;
+import telran.java51.accounting.model.UserToken;
 
 @Service
 @RequiredArgsConstructor
 public class UserAccountServiceImpl implements UserAccountService, CommandLineRunner {
 
 	final UserAccountRepository userAccountRepository;
+	final UserTokenRepository userTokenRepository;
 	final ModelMapper modelMapper;
 	final PasswordEncoder passwordEncoder;
 
@@ -90,7 +95,18 @@ public class UserAccountServiceImpl implements UserAccountService, CommandLineRu
 			userAccount.addRole("ADMINISTRATOR");
 			userAccountRepository.save(userAccount);
 		}
+	}
 
+	@Override
+	public void recoveryPasswordLink(String email) {
+		UserToken userToken = new UserToken(email);
+		userTokenRepository.save(userToken);
+	}
+
+	@Override
+	public void recoveryPassword(String token) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
