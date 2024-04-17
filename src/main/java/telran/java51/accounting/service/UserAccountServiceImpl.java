@@ -1,9 +1,11 @@
 package telran.java51.accounting.service;
 
-import java.util.UUID;
+import java.time.LocalDateTime;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +29,7 @@ public class UserAccountServiceImpl implements UserAccountService, CommandLineRu
 	final UserTokenRepository userTokenRepository;
 	final ModelMapper modelMapper;
 	final PasswordEncoder passwordEncoder;
+	final JavaMailSender javaMailSender;
 
 	@Override
 	public UserDto register(UserRegisterDto userRegisterDto) {
@@ -74,7 +77,7 @@ public class UserAccountServiceImpl implements UserAccountService, CommandLineRu
 		} else {
 			res = userAccount.removeRole(role);
 		}
-		if(res) {
+		if (res) {
 			userAccountRepository.save(userAccount);
 		}
 		return modelMapper.map(userAccount, RolesDto.class);
@@ -99,14 +102,34 @@ public class UserAccountServiceImpl implements UserAccountService, CommandLineRu
 
 	@Override
 	public void recoveryPasswordLink(String email) {
+		userAccountRepository.findById(email).orElseThrow(UserNotFoundException::new);
 		UserToken userToken = new UserToken(email);
 		userTokenRepository.save(userToken);
+		sendRecoveryEmail(email, userToken.getToken());
+
+	}
+
+	private void sendRecoveryEmail(String email, String token) {
+		String recoveryLink = "https://finstats.herokuapp.com/account/recovery/"  + token;
+		String emailContent = "Click the following link to reset your password: " + recoveryLink;
+
+		SimpleMailMessage message = new SimpleMailMessage();
+		message.setTo(email);
+		message.setSubject("Password recovery request");
+		message.setText(emailContent);
+		javaMailSender.send(message);
+
 	}
 
 	@Override
-	public void recoveryPassword(String token) {
-		// TODO Auto-generated method stub
-		
+	public void recoveryPassword(String token, String newPassword) {
+		UserToken userToken = userTokenRepository.findById(token)
+				.orElseThrow(null);
+		if (LocalDateTime.now().isAfter(userToken.getExpirationDate())) {
+			userTokenRepository.delete(userToken);
+			throw new TokenExpiredExeption();
+		}
+		changePassword(userToken.getEmail(), newPassword);
 	}
 
 }

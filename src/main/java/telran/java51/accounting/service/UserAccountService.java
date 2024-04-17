@@ -11,7 +11,7 @@ public interface UserAccountService {
 
 	void recoveryPasswordLink(String email);
 
-	void recoveryPassword(String email);
+	void recoveryPassword(String token, String newPassword);
 
 	UserDto removeUser(String email);
 

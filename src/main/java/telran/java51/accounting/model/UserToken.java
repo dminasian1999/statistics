@@ -1,6 +1,6 @@
 package telran.java51.accounting.model;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import org.springframework.data.annotation.Id;
@@ -14,13 +14,11 @@ public class UserToken {
 	@Id
 	String email;
 	String token;
-	Date expirationDate;
+	LocalDateTime expirationDate;
 
 	public UserToken(String email) {
 		this.email = email;
 		this.token = UUID.randomUUID().toString();
-		this.expirationDate = new Date(System.currentTimeMillis()+1000*60*3);
+		this.expirationDate = LocalDateTime.now().plusHours(1);
 	}
-	
-	
 }

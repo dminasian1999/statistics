@@ -21,7 +21,6 @@ import telran.java51.accounting.dto.UserDto;
 import telran.java51.accounting.dto.UserEditDto;
 import telran.java51.accounting.dto.UserRegisterDto;
 import telran.java51.accounting.service.UserAccountService;
-import org.springframework.web.bind.annotation.RequestParam;
 
 
 @RestController
@@ -42,10 +41,10 @@ public class UserAccountController {
 		 userAccountService.recoveryPasswordLink(email);
 	}
 	
-	@GetMapping("/recovery/{token}")
+	@PostMapping("/recovery/{token}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void recoveryPassword(@PathVariable String token) {
-		 userAccountService.recoveryPassword(token);
+	public void recoveryPassword(@PathVariable String token, @RequestHeader("X-Password") String newPassword) {
+		 userAccountService.recoveryPassword(token, newPassword);
 	}
 	
 	

@@ -25,7 +25,10 @@ public class AuthorizationConfiguration {
 		http.csrf(csrf -> csrf.disable());
 		http.sessionManagement(session ->session.sessionCreationPolicy(SessionCreationPolicy.ALWAYS));
 		http.authorizeHttpRequests(authorize-> authorize
-				.requestMatchers("/account/register","/account/recovery")
+				.requestMatchers("/account/register")
+					.permitAll()
+					
+				.requestMatchers(HttpMethod.GET,"/account/recovery/**")
 					.permitAll()
 				.requestMatchers("/account/user/{email}/role/{role}") 
 					.hasRole(Role.ADMINISTRATOR.name())
