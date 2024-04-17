@@ -17,6 +17,7 @@ import telran.java51.accounting.dto.RolesDto;
 import telran.java51.accounting.dto.UserDto;
 import telran.java51.accounting.dto.UserEditDto;
 import telran.java51.accounting.dto.UserRegisterDto;
+import telran.java51.accounting.model.PasswordResetToken;
 import telran.java51.accounting.service.UserAccountService;
 
 @RestController
@@ -25,6 +26,7 @@ import telran.java51.accounting.service.UserAccountService;
 public class UserAccountController {
 
 	final UserAccountService userAccountService;
+	final PasswordResetToken passwordResetToken;
 
 	@PostMapping("/register")
 	public UserDto register(@RequestBody UserRegisterDto userRegisterDto) {
