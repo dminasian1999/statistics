@@ -11,8 +11,9 @@ import lombok.Getter;
 @Getter
 @Document(collection = "tokens")
 public class UserToken {
-	@Id
+	
 	String email;
+	@Id
 	String token;
 	LocalDateTime expirationDate;
 

@@ -4,7 +4,6 @@ package telran.java51.security;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.authorization.AuthorizationDecision;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -29,6 +28,8 @@ public class AuthorizationConfiguration {
 					.permitAll()
 					
 				.requestMatchers(HttpMethod.GET,"/account/recovery/**")
+					.permitAll()
+				.requestMatchers(HttpMethod.POST,"/account/recovery/**")
 					.permitAll()
 				.requestMatchers("/account/user/{email}/role/{role}") 
 					.hasRole(Role.ADMINISTRATOR.name())

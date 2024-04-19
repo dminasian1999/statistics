@@ -16,6 +16,7 @@ import telran.java51.accounting.dto.RolesDto;
 import telran.java51.accounting.dto.UserDto;
 import telran.java51.accounting.dto.UserEditDto;
 import telran.java51.accounting.dto.UserRegisterDto;
+import telran.java51.accounting.dto.exceptions.TokenExpiredExeption;
 import telran.java51.accounting.dto.exceptions.UserExistsException;
 import telran.java51.accounting.dto.exceptions.UserNotFoundException;
 import telran.java51.accounting.model.UserAccount;
@@ -105,7 +106,7 @@ public class UserAccountServiceImpl implements UserAccountService, CommandLineRu
 		userAccountRepository.findById(email).orElseThrow(UserNotFoundException::new);
 		UserToken userToken = new UserToken(email);
 		userTokenRepository.save(userToken);
-		sendRecoveryEmail(email, userToken.getToken());
+//		sendRecoveryEmail(email, userToken.getToken());
 
 	}
 
@@ -124,7 +125,7 @@ public class UserAccountServiceImpl implements UserAccountService, CommandLineRu
 	@Override
 	public void recoveryPassword(String token, String newPassword) {
 		UserToken userToken = userTokenRepository.findById(token)
-				.orElseThrow(null);
+				.orElseThrow(TokenExpiredExeption::new);
 		if (LocalDateTime.now().isAfter(userToken.getExpirationDate())) {
 			userTokenRepository.delete(userToken);
 			throw new TokenExpiredExeption();
