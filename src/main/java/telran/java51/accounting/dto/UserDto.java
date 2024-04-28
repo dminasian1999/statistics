@@ -13,7 +13,7 @@ import lombok.Singular;
 @NoArgsConstructor
 @Builder
 public class UserDto {
-	String email;
+	String login;
 	String firstName;
 	String lastName;
 	@Singular

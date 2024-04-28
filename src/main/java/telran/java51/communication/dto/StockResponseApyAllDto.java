@@ -5,7 +5,7 @@ import java.time.LocalDate;
 import lombok.Getter;
 
 @Getter
-public class IndexResponseApyAllDto {
+public class StockResponseApyAllDto {
 
 	String source;
 	LocalDate historyFrom;

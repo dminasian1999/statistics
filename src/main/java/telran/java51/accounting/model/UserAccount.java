@@ -13,7 +13,7 @@ import lombok.Setter;
 @Document(collection = "users")
 public class UserAccount {
 	@Id
-	String email;
+	String login;
 	@Setter
 	String password;
 	@Setter
@@ -27,9 +27,9 @@ public class UserAccount {
 		addRole("USER");
 	}
 
-	public UserAccount(String email, String password, String firstName, String lastName) {
+	public UserAccount(String login, String password, String firstName, String lastName) {
 		this();
-		this.email = email;
+		this.login = login;
 		this.password = password;
 		this.firstName = firstName;
 		this.lastName = lastName;

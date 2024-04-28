@@ -11,15 +11,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
-import telran.java51.communication.dto.IndexCorrelationDto;
-import telran.java51.communication.dto.IndexDto;
-import telran.java51.communication.dto.IndexHistoryDto;
-import telran.java51.communication.dto.IndexPackageDto;
-import telran.java51.communication.dto.IndexResponseApyAllDto;
-import telran.java51.communication.dto.IndexResponseApyDto;
-import telran.java51.communication.dto.IndexResponseIrrDto;
-import telran.java51.communication.dto.IndexResponsePeriodDto;
-import telran.java51.communication.dto.IndexResponseValueCloseDto;
+import telran.java51.communication.dto.StockCorrelationDto;
+import telran.java51.communication.dto.StockDto;
+import telran.java51.communication.dto.StockHistoryDto;
+import telran.java51.communication.dto.StockPackageDto;
+import telran.java51.communication.dto.StockResponseApyAllDto;
+import telran.java51.communication.dto.StockResponseApyDto;
+import telran.java51.communication.dto.StockResponseIrrDto;
+import telran.java51.communication.dto.StockResponsePeriodDto;
+import telran.java51.communication.dto.StockResponseValueCloseDto;
 import telran.java51.communication.service.CommunicationService;
 
 
@@ -31,12 +31,12 @@ public class CommunicationController  {
 	final CommunicationService communicationService;
 	
 	@PostMapping("/parser/{indexForHistory}/{csv}")
-	public boolean addHistoryWithFile() {
-		return communicationService.addHistoryWithFile();
+	public boolean addHistoryWithFile(@PathVariable String indexForHistory, @PathVariable String csv) {
+		return communicationService.addHistoryWithFile(indexForHistory,csv);
 	}
 
 	@GetMapping("/parser/{indexForHistory}")
-	public IndexHistoryDto getTimeHistoryForIndex(@PathVariable String indexForHistory) {
+	public StockHistoryDto getTimeHistoryForIndex(@PathVariable String indexForHistory) {
 		return communicationService.getTimeHistoryForIndex();
 	}
 
@@ -46,37 +46,37 @@ public class CommunicationController  {
 	}
 
 	@PostMapping("/index")
-	public List<IndexResponsePeriodDto> periodBeetwin(@RequestBody IndexDto index) {
+	public List<StockResponsePeriodDto> periodBeetwin(@RequestBody StockDto index) {
 		return communicationService.periodBeetwin(index);
 	}
 
 	@PostMapping("/data")
-	public List<IndexResponseValueCloseDto> getAllValueCloseBetween(@RequestBody IndexDto index) {
+	public List<StockResponseValueCloseDto> getAllValueCloseBetween(@RequestBody StockDto index) {
 		return communicationService.getAllValueCloseBetween(index);
 	}
 
 	@PostMapping("/index/sum")
-	public IndexResponsePeriodDto calcSumPackage(@RequestBody IndexPackageDto indexPackage) {
+	public StockResponsePeriodDto calcSumPackage(@RequestBody StockPackageDto indexPackage) {
 		return communicationService.calcSumPackage(indexPackage);
 	}
 
 	@PostMapping("/index/apy")
-	public IndexResponseApyDto calcIncomeWithApy(@RequestBody IndexDto index) {
+	public StockResponseApyDto calcIncomeWithApy(@RequestBody StockDto index) {
 		return communicationService.calcIncomeWithApy(index);
 	}
 
 	@PostMapping("/index/apy_all")
-	public IndexResponseApyAllDto calcIncomeWithApyAllDate(@RequestBody IndexDto index) {
+	public StockResponseApyAllDto calcIncomeWithApyAllDate(@RequestBody StockDto index) {
 		return communicationService.calcIncomeWithApyAllDate(index);
 	}
 
 	@PostMapping("/index/irr")
-	public IndexResponseIrrDto calcIncomeWithIrr(@RequestBody IndexDto index) {
+	public StockResponseIrrDto calcIncomeWithIrr(@RequestBody StockDto index) {
 		return communicationService.calcIncomeWithIrr(index);
 	}
 
 	@PostMapping("/index/correlation")
-	public String calcCorrelation(@RequestBody IndexCorrelationDto index) {
+	public String calcCorrelation(@RequestBody StockCorrelationDto index) {
 		return communicationService.calcCorrelation(index);
 	}
 

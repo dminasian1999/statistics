@@ -2,37 +2,37 @@ package telran.java51.communication.service;
 
 import java.util.List;
 
-import telran.java51.communication.dto.IndexCorrelationDto;
-import telran.java51.communication.dto.IndexDto;
-import telran.java51.communication.dto.IndexHistoryDto;
-import telran.java51.communication.dto.IndexPackageDto;
-import telran.java51.communication.dto.IndexResponseApyAllDto;
-import telran.java51.communication.dto.IndexResponseApyDto;
-import telran.java51.communication.dto.IndexResponseIrrDto;
-import telran.java51.communication.dto.IndexResponsePeriodDto;
-import telran.java51.communication.dto.IndexResponseValueCloseDto;
+import telran.java51.communication.dto.StockCorrelationDto;
+import telran.java51.communication.dto.StockDto;
+import telran.java51.communication.dto.StockHistoryDto;
+import telran.java51.communication.dto.StockPackageDto;
+import telran.java51.communication.dto.StockResponseApyAllDto;
+import telran.java51.communication.dto.StockResponseApyDto;
+import telran.java51.communication.dto.StockResponseIrrDto;
+import telran.java51.communication.dto.StockResponsePeriodDto;
+import telran.java51.communication.dto.StockResponseValueCloseDto;
 
 public interface CommunicationService {
 
-	boolean addHistoryWithFile();
+	boolean addHistoryWithFile(String indexForHistory,String csv);
 	
-	IndexHistoryDto getTimeHistoryForIndex();
+	StockHistoryDto getTimeHistoryForIndex();
 	
 	List<String> getAllIndexes();
 	
-	List<IndexResponsePeriodDto> periodBeetwin(IndexDto index);
+	List<StockResponsePeriodDto> periodBeetwin(StockDto index);
 	
-	List<IndexResponseValueCloseDto> getAllValueCloseBetween(IndexDto index);
+	List<StockResponseValueCloseDto> getAllValueCloseBetween(StockDto index);
 	
-	IndexResponsePeriodDto calcSumPackage(IndexPackageDto indexPackage);
+	StockResponsePeriodDto calcSumPackage(StockPackageDto indexPackage);
 	
-	IndexResponseApyDto calcIncomeWithApy (IndexDto index);
+	StockResponseApyDto calcIncomeWithApy (StockDto index);
 	
-	IndexResponseApyAllDto calcIncomeWithApyAllDate (IndexDto index); 
+	StockResponseApyAllDto calcIncomeWithApyAllDate (StockDto index); 
 	
-	IndexResponseIrrDto calcIncomeWithIrr(IndexDto index);
+	StockResponseIrrDto calcIncomeWithIrr(StockDto index);
 	
-	String calcCorrelation(IndexCorrelationDto index);
+	String calcCorrelation(StockCorrelationDto index);
 	
 	boolean deleteAllHistoryForCompany(String index);
 }

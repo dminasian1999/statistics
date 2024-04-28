@@ -6,11 +6,9 @@ import java.util.List;
 import lombok.Getter;
 
 @Getter
-public class IndexDto {
+public class StockCorrelationDto {
 
-	List<String> indexs;
-	String type;
-	Integer quantity;
-	LocalTime from;
-	LocalTime to;
+	List<String> indexs ;
+    LocalTime from;
+    LocalTime to;
 }

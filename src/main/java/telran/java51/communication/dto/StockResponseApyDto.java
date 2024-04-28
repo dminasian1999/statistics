@@ -6,7 +6,7 @@ import java.util.List;
 import lombok.Getter;
 
 @Getter
-public class IndexResponseApyDto {
+public class StockResponseApyDto {
 	
 	LocalTime from;
 	LocalTime to;

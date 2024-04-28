@@ -6,13 +6,11 @@ import java.util.List;
 import lombok.Getter;
 
 @Getter
-public class IndexPackageDto {
+public class StockDto {
 
 	List<String> indexs;
-	List<Integer> amount;
-	LocalTime from;
-	LocalTime to;
 	String type;
 	Integer quantity;
-
+	LocalTime from;
+	LocalTime to;
 }

@@ -6,16 +6,13 @@ import java.util.List;
 import lombok.Getter;
 
 @Getter
-public class IndexResponsePeriodDto {
+public class StockPackageDto {
 
+	List<String> indexs;
+	List<Integer> amount;
 	LocalTime from;
 	LocalTime to;
-	List<String> source;
 	String type;
-	Integer max;
-	Integer mean;
-	Integer median;
-	Integer min;
-	Integer std;
+	Integer quantity;
 
 }

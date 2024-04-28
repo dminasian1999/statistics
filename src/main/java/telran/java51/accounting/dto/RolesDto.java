@@ -13,7 +13,7 @@ import lombok.Singular;
 @NoArgsConstructor
 @Builder
 public class RolesDto {
-	String email;
+	String login;
 	@Singular
 	Set<String> roles;
 }

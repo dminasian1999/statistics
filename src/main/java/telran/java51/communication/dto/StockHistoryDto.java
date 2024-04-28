@@ -5,7 +5,7 @@ import java.time.LocalTime;
 import lombok.Getter;
 
 @Getter
-public class IndexHistoryDto {
+public class StockHistoryDto {
 	String source ;
     LocalTime fromData;
     LocalTime toData;

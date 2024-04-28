@@ -6,7 +6,7 @@ import java.util.List;
 import lombok.Getter;
 
 @Getter
-public class IndexResponseIrrDto {
+public class StockResponseIrrDto {
 
 	LocalDate from;
 	LocalDate to;

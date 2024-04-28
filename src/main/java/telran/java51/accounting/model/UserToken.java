@@ -12,13 +12,13 @@ import lombok.Getter;
 @Document(collection = "tokens")
 public class UserToken {
 	
-	String email;
+	String login;
 	@Id
 	String token;
 	LocalDateTime expirationDate;
 
-	public UserToken(String email) {
-		this.email = email;
+	public UserToken(String login) {
+		this.login = login;
 		this.token = UUID.randomUUID().toString();
 		this.expirationDate = LocalDateTime.now().plusHours(1);
 	}

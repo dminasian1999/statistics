@@ -9,18 +9,18 @@ public interface UserAccountService {
 
 	UserDto register(UserRegisterDto userRegisterDto);
 
-	void recoveryPasswordLink(String email);
+	void recoveryPasswordLink(String login);
 
 	void recoveryPassword(String token, String newPassword);
 
-	UserDto removeUser(String email);
+	UserDto removeUser(String login);
 
-	UserDto updateUser(String email, UserEditDto userEditDto);
+	UserDto updateUser(String login, UserEditDto userEditDto);
 
-	RolesDto changeRolesList(String email, String role, boolean isAddRole);
+	RolesDto changeRolesList(String login, String role, boolean isAddRole);
 
-	void changePassword(String email, String newPassword);
+	void changePassword(String login, String newPassword);
 
-	UserDto getUser(String email);
+	UserDto getUser(String login);
 
 }

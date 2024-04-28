@@ -6,7 +6,7 @@ import java.util.List;
 import lombok.Getter;
 
 @Getter
-public class IndexResponseValueCloseDto {
+public class StockResponseValueCloseDto {
 
 	LocalTime from;
 	LocalTime to;

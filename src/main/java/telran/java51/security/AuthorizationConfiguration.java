@@ -26,17 +26,16 @@ public class AuthorizationConfiguration {
 		http.authorizeHttpRequests(authorize-> authorize
 				.requestMatchers("/account/register")
 					.permitAll()
-					
 				.requestMatchers(HttpMethod.GET,"/account/recovery/**")
 					.permitAll()
 				.requestMatchers(HttpMethod.POST,"/account/recovery/**")
 					.permitAll()
 				.requestMatchers("/account/user/{email}/role/{role}") 
 					.hasRole(Role.ADMINISTRATOR.name())
-				.requestMatchers(HttpMethod.PUT, "/account/user/{email}")
-					.access(new WebExpressionAuthorizationManager("#email == authentication.name"))
-				.requestMatchers(HttpMethod.DELETE, "/account/user/{email}")
-					.access(new WebExpressionAuthorizationManager("#email == authentication.name or hasRole('ADMINISTRATOR')"))
+				.requestMatchers(HttpMethod.PUT, "/account/user/{login}")
+					.access(new WebExpressionAuthorizationManager("#login == authentication.name"))
+				.requestMatchers(HttpMethod.DELETE, "/account/user/{login}")
+					.access(new WebExpressionAuthorizationManager("#login == authentication.name or hasRole('ADMINISTRATOR')"))
 				.anyRequest()
 					.authenticated()
 		);

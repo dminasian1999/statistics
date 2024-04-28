@@ -35,10 +35,10 @@ public class UserAccountController {
 		return userAccountService.register(userRegisterDto);
 	}
 	
-	@GetMapping("/recovery/{email}")
+	@GetMapping("/recovery/{login}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void recoveryPasswordLink(@PathVariable String email) {
-		 userAccountService.recoveryPasswordLink(email);
+	public void recoveryPasswordLink(@PathVariable String login) {
+		 userAccountService.recoveryPasswordLink(login);
 	}
 	
 	@PostMapping("/recovery/{token}")
@@ -55,24 +55,24 @@ public class UserAccountController {
 		return userAccountService.getUser(credentials.split(":")[0]);
 	}
 
-	@DeleteMapping("/user/{email}")
-	public UserDto removeUser(@PathVariable String email) {
-		return userAccountService.removeUser(email);
+	@DeleteMapping("/user/{login}")
+	public UserDto removeUser(@PathVariable String login) {
+		return userAccountService.removeUser(login);
 	}
 
-	@PutMapping("/user/{email}")
-	public UserDto updateUser(@PathVariable String email, @RequestBody UserEditDto userEditDto) {
-		return userAccountService.updateUser(email, userEditDto);
+	@PutMapping("/user/{login}")
+	public UserDto updateUser(@PathVariable String login, @RequestBody UserEditDto userEditDto) {
+		return userAccountService.updateUser(login, userEditDto);
 	}
 
-	@PutMapping("/user/{email}/role/{role}")
-	public RolesDto addRole(@PathVariable String email, @PathVariable String role) {
-		return userAccountService.changeRolesList(email, role, true);
+	@PutMapping("/user/{login}/role/{role}")
+	public RolesDto addRole(@PathVariable String login, @PathVariable String role) {
+		return userAccountService.changeRolesList(login, role, true);
 	}
 
-	@DeleteMapping("/user/{email}/role/{role}")
-	public RolesDto deleteRole(@PathVariable String email, @PathVariable String role) {
-		return userAccountService.changeRolesList(email, role, false);
+	@DeleteMapping("/user/{login}/role/{role}")
+	public RolesDto deleteRole(@PathVariable String login, @PathVariable String role) {
+		return userAccountService.changeRolesList(login, role, false);
 	}
 
 	@PutMapping("/password")
