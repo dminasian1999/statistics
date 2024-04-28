@@ -30,14 +30,14 @@ public class CommunicationController  {
 
 	final CommunicationService communicationService;
 	
-	@PostMapping("/parser/{indexForHistory}/{csv}")
-	public boolean addHistoryWithFile(@PathVariable String indexForHistory, @PathVariable String csv) {
-		return communicationService.addHistoryWithFile(indexForHistory,csv);
+	@PostMapping("/parser/{index}/{csv}")
+	public boolean addHistoryWithFile(@PathVariable String index, @PathVariable String csv) {
+		return communicationService.addHistoryWithFile(index,csv);
 	}
 
-	@GetMapping("/parser/{indexForHistory}")
-	public StockHistoryDto getTimeHistoryForIndex(@PathVariable String indexForHistory) {
-		return communicationService.getTimeHistoryForIndex();
+	@GetMapping("/index/{index}")
+	public StockHistoryDto getTimeHistoryForIndex(@PathVariable String index) {
+		return communicationService.getTimeHistoryForIndex(index);
 	}
 
 	@GetMapping("/index")

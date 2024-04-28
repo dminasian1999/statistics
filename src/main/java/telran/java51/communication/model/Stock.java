@@ -1,40 +1,43 @@
 package telran.java51.communication.model;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.time.LocalDate;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
+@Setter
 @Getter
+@ToString
 @Document(collection = "market")
-@EqualsAndHashCode(of = "index")
+@EqualsAndHashCode(of = "id")
 public class Stock {
-	
 	@Id
+	String id;
 	String index;
-	@Setter
-	String name;
+	LocalDate date;
+	double open;
+	double high;
+	double low;
+	double close;
+	double adjective_close;
+	long volume;
 	
-	List<StockInfo> history ;
-	
-	
-	
-	public boolean addHistory(StockInfo history) {
-		return this.history.add(history);
-	}
-
-
-
-	public Stock(String index) {
+	public Stock(String index, LocalDate date, double open, double high, double low, double close,
+			double adjective_close, long volume) {
 		this.index = index;
-		history =  new ArrayList<>();
+		this.date = date;
+		this.open = open;
+		this.high = high;
+		this.low = low;
+		this.close = close;
+		this.adjective_close = adjective_close;
+		this.volume = volume;
 	}
-
+	
+	
 }

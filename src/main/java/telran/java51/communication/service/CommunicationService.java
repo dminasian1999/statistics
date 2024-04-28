@@ -16,7 +16,7 @@ public interface CommunicationService {
 
 	boolean addHistoryWithFile(String indexForHistory,String csv);
 	
-	StockHistoryDto getTimeHistoryForIndex();
+	StockHistoryDto getTimeHistoryForIndex(String index);
 	
 	List<String> getAllIndexes();
 	
