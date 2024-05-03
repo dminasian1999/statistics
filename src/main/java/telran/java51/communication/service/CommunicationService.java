@@ -20,7 +20,7 @@ public interface CommunicationService {
 	
 	List<String> getAllIndexes();
 	
-	List<StockResponsePeriodDto> periodBeetwin(StockDto index);
+	StockResponsePeriodDto periodBeetwin(StockDto index);
 	
 	List<StockResponseValueCloseDto> getAllValueCloseBetween(StockDto index);
 	

@@ -1,21 +1,22 @@
 package telran.java51.communication.dto;
 
-import java.time.LocalTime;
-import java.util.List;
+import java.time.LocalDate;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
+@AllArgsConstructor
 public class StockResponsePeriodDto {
 
-	LocalTime from;
-	LocalTime to;
-	List<String> source;
+	LocalDate from;
+	LocalDate to;
+	String source;
 	String type;
-	Integer max;
-	Integer mean;
-	Integer median;
-	Integer min;
-	Integer std;
+	Double max;
+	Double mean;
+	Double median;
+	Double min;
+	Double std;
 
 }

@@ -20,6 +20,7 @@ import telran.java51.communication.dto.StockResponseApyDto;
 import telran.java51.communication.dto.StockResponseIrrDto;
 import telran.java51.communication.dto.StockResponsePeriodDto;
 import telran.java51.communication.dto.StockResponseValueCloseDto;
+import telran.java51.communication.model.Index;
 import telran.java51.communication.service.CommunicationService;
 
 
@@ -46,7 +47,7 @@ public class CommunicationController  {
 	}
 
 	@PostMapping("/index")
-	public List<StockResponsePeriodDto> periodBeetwin(@RequestBody StockDto index) {
+	public StockResponsePeriodDto periodBeetwin(@RequestBody StockDto index) {
 		return communicationService.periodBeetwin(index);
 	}
 

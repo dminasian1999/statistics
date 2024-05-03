@@ -7,6 +7,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class StockNotFoundException extends RuntimeException {
 
 	private static final long serialVersionUID = 5902615205414603803L;
-
+	
 	
 }
