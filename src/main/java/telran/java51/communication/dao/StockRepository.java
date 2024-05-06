@@ -26,4 +26,9 @@ public interface StockRepository extends CrudRepository<Stock, String> {
 	})
 	StatisticDto findByIndexAndDateBetween(String index, LocalDate from, LocalDate to);
 
+	@Aggregation({
+	    "{$match: { index: ?0, date: { $gte: ?1, $lte: ?2 } } }",
+	    "{$group:{ _id: '$close'} }"
+	})
+	Stream<Double> findByIndexAndDateBetween111(String index, LocalDate from, LocalDate to);
 }

@@ -68,14 +68,51 @@ public class CommunicationServiceImpl implements CommunicationService {
 	public StockResponsePeriodDto periodBeetwin(StockDto index) {
 		// TODO plural
 		// TODO multiple threads ?
-		// TODO exceptions if .getTo() is in future
-		// TODO should we divide total result to corresponding periods and return
-		// average results of each field as result?
-
+		// TODO exceptions if .getTo() is in future	
 		StatisticDto st = stockRepository.findByIndexAndDateBetween(index.getIndexs().get(0),
 				index.getFrom().minusDays(1), index.getTo().plusDays(1));
-		return new StockResponsePeriodDto(index.getFrom(), index.getTo(), index.getIndexs().get(0), index.getType(),
+		return new StockResponsePeriodDto(index.getFrom(), index.getTo(), index.getIndexs().get(0),String.valueOf(index.getQuantity()+" "+index.getType()) ,
 				st.getMax(), st.getMean(), st.getMedian(), st.getMin(), st.getStd());
+	}
+
+	private double calculateIncome(double first, double last, int power) {
+		double s = last/first;
+        double result = Math.pow(s, 1.0 / power);
+        return result - 1;
+	}
+
+	private LocalDate[] getPeriodDates(StockDto index) {
+		LocalDate[] res = new LocalDate[2];
+		res[0] = index.getFrom();
+		switch (index.getType()) {
+        case "days":
+            res[1] = res[0].plusDays(2).plusDays(index.getQuantity());
+            break;
+        case "weeks":
+            res[1] = res[0].plusDays(2).plusWeeks(index.getQuantity());
+            break;
+        case "months":
+            res[1] = res[0].plusDays(2).plusMonths(index.getQuantity());
+            break;
+        case "decades":
+            res[1] = res[0].plusDays(2).plusYears(index.getQuantity()*10);
+            break;
+        case "years":
+            res[1] = res[0].plusDays(2).plusYears(index.getQuantity());
+            break;
+        case "centuries":
+            res[1] = res[0].plusDays(2).plusYears(index.getQuantity()*10*10);
+            break;
+        default:
+            System.out.println("Invalid type: " + index.getType());
+            break;
+		}
+		
+		for (LocalDate localDate : res) {
+			System.out.println(localDate.toString());
+		}
+		
+		return res;
 	}
 
 	@Override
