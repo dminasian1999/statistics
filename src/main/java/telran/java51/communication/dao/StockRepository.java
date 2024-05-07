@@ -8,8 +8,7 @@ import java.util.stream.Stream;
 import org.springframework.data.mongodb.repository.Aggregation;
 import org.springframework.data.repository.CrudRepository;
 
-import lombok.Synchronized;
-import telran.java51.communication.dto.IncomeApyDto;
+import telran.java51.communication.model.IncomeApy;
 import telran.java51.communication.model.Stock;
 
 public interface StockRepository extends CrudRepository<Stock, String> {
@@ -39,7 +38,7 @@ public interface StockRepository extends CrudRepository<Stock, String> {
 	@Aggregation({
 	    "{$match: { index: ?0, date: { $gte: ?1, $lte: ?2 } } }",
 	    "{$group:{ _id: null, first: {$first: '$close'}, last:{$last: '$close'}}}",
-	    "{$project:{dateOfPurchase: ?1, purchaseAmount:'$first',dateOfSale: ?2,saleAmount: '$last' ,income:{$subtract:[{$pow:[{$divide:['$last','$first']}, ?3]}, 1]}}}"
+	    "{$project:{index: ?0 , dateOfPurchase: ?1, purchaseAmount:'$first',dateOfSale: ?2,saleAmount: '$last' ,income:{$subtract:[{$pow:[{$divide:['$last','$first']}, ?3]}, 1]}}}"
 	})
-	 IncomeApyDto calcIncomeForPeriod(String index, LocalDateTime from, LocalDateTime to, int power);
+	 IncomeApy calcIncomeForPeriod(String index, LocalDateTime from, LocalDateTime to, int power);
 }

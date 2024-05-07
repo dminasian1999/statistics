@@ -6,13 +6,13 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
-import java.util.Map;
 import java.util.TreeMap;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
+import telran.java51.communication.dao.PeriodRepository;
 import telran.java51.communication.dao.StockRepository;
 import telran.java51.communication.dto.IncomeApyDto;
 import telran.java51.communication.dto.StockCorrelationDto;
@@ -25,6 +25,7 @@ import telran.java51.communication.dto.StockResponseIrrDto;
 import telran.java51.communication.dto.StockResponsePeriodDto;
 import telran.java51.communication.dto.StockResponseValueCloseDto;
 import telran.java51.communication.dto.exceptions.StockNotFoundException;
+import telran.java51.communication.model.IncomeApy;
 import telran.java51.communication.model.Stock;
 
 @Service
@@ -33,6 +34,7 @@ public class CommunicationServiceImpl implements CommunicationService {
 
 	final ModelMapper modelMapper;
 	final StockRepository stockRepository;
+	final PeriodRepository periodRepository;
 
 	@Override
 	public boolean addHistoryWithFile(String indexForHistory, String csv) {
@@ -130,19 +132,27 @@ public class CommunicationServiceImpl implements CommunicationService {
 
 	@Override
 	public StockResponseApyDto calcIncomeWithApy(StockDto index) {
-		//TODO get id from db
 		LocalDateTime[] periodTimes = getPeriodDates(index);
 		LocalDateTime firstDate = periodTimes[0];
 		LocalDateTime lastDate = periodTimes[1];
-		TreeMap<Double, IncomeApyDto> statistics = new TreeMap<>();
+//		TreeMap<Double, IncomeApy> statistics = new TreeMap<>();
 		while(firstDate.isBefore(periodTimes[1])) {
-			IncomeApyDto income =  stockRepository.calcIncomeForPeriod(index.getIndexs().get(0),firstDate,lastDate,1);
-			statistics.put(income.getIncome(),income);
-			System.out.println(income);
+//			IncomeApy income =  periodRepository.findByIndexAndDateOfPurchaseAndDateOfSale(index.getIndexs().get(0),firstDate,lastDate);
+			if (!periodRepository.existsByIndexAndDateOfPurchaseAndDateOfSale(index.getIndexs().get(0),firstDate,lastDate)) {
+				System.out.println(periodRepository.existsByIndexAndDateOfPurchaseAndDateOfSale(index.getIndexs().get(0),firstDate,lastDate));
+				IncomeApy income =  stockRepository.calcIncomeForPeriod(index.getIndexs().get(0),firstDate,lastDate,1);
+				periodRepository.save(income);
+			}			
+//			statistics.put(income.getIncome(),income);
+//			System.out.println(income);
 			firstDate = firstDate.plusDays(1);
 			lastDate = lastDate.plusDays(1);
 		}
-		return new StockResponseApyDto(index.getFrom(), index.getTo().minusDays(1), index.getIndexs().get(0), index.getType(), statistics.firstEntry().getValue(), statistics.lastEntry().getValue());
+		
+		System.out.println(periodRepository.findFirstByIndexIgnoreCaseOrderByIncomeAsc(index.getIndexs().get(0)));
+		System.out.println(periodRepository.findFirstByIndexIgnoreCaseOrderByIncomeDesc(index.getIndexs().get(0)));
+//		return new StockResponseApyDto(index.getFrom(), index.getTo().minusDays(1), index.getIndexs().get(0), index.getType(), statistics.firstEntry().getValue(), statistics.lastEntry().getValue());
+		return null;
 	}
 
 	@Override
