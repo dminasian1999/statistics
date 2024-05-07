@@ -1,4 +1,4 @@
-package telran.java51.communication.dto;
+package telran.java51.communication.model;
 
 import java.time.LocalDate;
 
@@ -11,12 +11,13 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class IncomeApyDto {
-	
+public class IncomeApy {
+
 	LocalDate dateOfPurchase;
 	Double purchaseAmount;
 	LocalDate dateOfSale;
 	Double saleAmount;
 	Double income;
 	Double apy;
+
 }

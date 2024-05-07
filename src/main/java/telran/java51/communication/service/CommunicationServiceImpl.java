@@ -3,14 +3,18 @@ package telran.java51.communication.service;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 import telran.java51.communication.dao.StockRepository;
-import telran.java51.communication.dto.StatisticDto;
+import telran.java51.communication.dto.IncomeApyDto;
 import telran.java51.communication.dto.StockCorrelationDto;
 import telran.java51.communication.dto.StockDto;
 import telran.java51.communication.dto.StockHistoryDto;
@@ -69,49 +73,46 @@ public class CommunicationServiceImpl implements CommunicationService {
 		// TODO plural
 		// TODO multiple threads ?
 		// TODO exceptions if .getTo() is in future	
-		StatisticDto st = stockRepository.findByIndexAndDateBetween(index.getIndexs().get(0),
-				index.getFrom().minusDays(1), index.getTo().plusDays(1));
-		return new StockResponsePeriodDto(index.getFrom(), index.getTo(), index.getIndexs().get(0),String.valueOf(index.getQuantity()+" "+index.getType()) ,
-				st.getMax(), st.getMean(), st.getMedian(), st.getMin(), st.getStd());
+//		StatisticDto st = stockRepository.findByIndexAndDateBetween(index.getIndexs().get(0),
+//				index.getFrom().minusDays(1), index.getTo().plusDays(1));
+//		return new StockResponsePeriodDto(index.getFrom(), index.getTo(), index.getIndexs().get(0),String.valueOf(index.getQuantity()+" "+index.getType()) ,
+//				st.getMax(), st.getMean(), st.getMedian(), st.getMin(), st.getStd());
+		return null;
 	}
 
-	private double calculateIncome(double first, double last, int power) {
-		double s = last/first;
-        double result = Math.pow(s, 1.0 / power);
-        return result - 1;
-	}
+//	private double calculateIncome(double first, double last, int power) {
+//		double s = last/first;
+//        double result = Math.pow(s, 1.0 / power);
+//        return result - 1;
+//	}
 
-	private LocalDate[] getPeriodDates(StockDto index) {
-		LocalDate[] res = new LocalDate[2];
-		res[0] = index.getFrom();
+	private LocalDateTime[] getPeriodDates(StockDto index) {
+		LocalDateTime[] res = new LocalDateTime[2];
+		res[0] = LocalDateTime.of(index.getFrom(), LocalTime.of(21, 0));
 		switch (index.getType()) {
         case "days":
-            res[1] = res[0].plusDays(2).plusDays(index.getQuantity());
+            res[1] = res[0].plusDays(index.getQuantity());
             break;
         case "weeks":
-            res[1] = res[0].plusDays(2).plusWeeks(index.getQuantity());
+            res[1] = res[0].plusWeeks(index.getQuantity());
             break;
         case "months":
-            res[1] = res[0].plusDays(2).plusMonths(index.getQuantity());
+            res[1] = res[0].plusMonths(index.getQuantity());
             break;
         case "decades":
-            res[1] = res[0].plusDays(2).plusYears(index.getQuantity()*10);
+            res[1] = res[0].plusYears(index.getQuantity()*10);
             break;
         case "years":
-            res[1] = res[0].plusDays(2).plusYears(index.getQuantity());
+            res[1] = res[0].plusYears(index.getQuantity());
             break;
         case "centuries":
-            res[1] = res[0].plusDays(2).plusYears(index.getQuantity()*10*10);
+            res[1] = res[0].plusYears(index.getQuantity()*10*10);
             break;
         default:
             System.out.println("Invalid type: " + index.getType());
             break;
 		}
-		
-		for (LocalDate localDate : res) {
-			System.out.println(localDate.toString());
-		}
-		
+		res[1] = res[1].plusDays(1); 
 		return res;
 	}
 
@@ -129,8 +130,19 @@ public class CommunicationServiceImpl implements CommunicationService {
 
 	@Override
 	public StockResponseApyDto calcIncomeWithApy(StockDto index) {
-		// TODO Auto-generated method stub
-		return null;
+		//TODO get id from db
+		LocalDateTime[] periodTimes = getPeriodDates(index);
+		LocalDateTime firstDate = periodTimes[0];
+		LocalDateTime lastDate = periodTimes[1];
+		TreeMap<Double, IncomeApyDto> statistics = new TreeMap<>();
+		while(firstDate.isBefore(periodTimes[1])) {
+			IncomeApyDto income =  stockRepository.calcIncomeForPeriod(index.getIndexs().get(0),firstDate,lastDate,1);
+			statistics.put(income.getIncome(),income);
+			System.out.println(income);
+			firstDate = firstDate.plusDays(1);
+			lastDate = lastDate.plusDays(1);
+		}
+		return new StockResponseApyDto(index.getFrom(), index.getTo().minusDays(1), index.getIndexs().get(0), index.getType(), statistics.firstEntry().getValue(), statistics.lastEntry().getValue());
 	}
 
 	@Override
