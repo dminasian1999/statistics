@@ -36,12 +36,6 @@ public interface StockRepository extends CrudRepository<Stock, String> {
 	})
 	List<Double> findByIndexAndDateBetween2(String index, LocalDate from, LocalDate to);
 	
-//	@Aggregation({
-//	    "{$match: { index: ?0, date: { $gte: ?1, $lte: ?2 } } }",
-//	    "{$group:{ _id: null, first: {$first: '$close'}, last:{$last: '$close'}}}",
-//	    "{ids: '$id',$project:{index: ?0 , dateOfPurchase: ?1, purchaseAmount:'$first',dateOfSale: ?2,saleAmount: '$last' ,income:{$subtract:[{$pow:[{$divide:['$last','$first']}, ?3]}, 1]}}}"
-//	})
-//	 Period calcIncomeForPeriod(String index, LocalDateTime from, LocalDateTime to, int power);
 	@Aggregation({
 		"{$match: { index: ?0, date: { $gte: ?1, $lte: ?2 } } }",
 		"{$group:{ _id: null, first: {$first: '$close'}, last:{$last: '$close'}}}",

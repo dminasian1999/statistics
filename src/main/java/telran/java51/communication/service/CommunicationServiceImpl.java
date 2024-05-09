@@ -137,7 +137,7 @@ public class CommunicationServiceImpl implements CommunicationService {
 		LocalDateTime lastLimit=  LocalDateTime.of(index.getTo(), LocalTime.of(21, 0)); 
 		while(firstDate.isBefore(lastLimit)) {
 			if (!periodRepository.existsByIndexIgnoreCaseAndDateOfPurchaseAndDateOfSale(index.getIndexs().get(0),firstDate,lastDate) ) {
-				Period income =  stockRepository.calcIncomeForPeriod(index.getIndexs().get(0),firstDate,lastDate,1);
+				Period income =  stockRepository.calcIncomeForPeriod(index.getIndexs().get(0),firstDate,lastDate,1);				
 				periodRepository.save(income);
 			}
 			firstDate = firstDate.plusDays(1);
@@ -146,9 +146,12 @@ public class CommunicationServiceImpl implements CommunicationService {
 		Period minm = periodRepository.findFirstByIndexIgnoreCaseOrderByIncomeAsc(index.getIndexs().get(0));
 		Period maxm = periodRepository.findFirstByIndexIgnoreCaseOrderByIncomeDesc(index.getIndexs().get(0));
 		IncomeApyDto min = modelMapper.map(minm, IncomeApyDto.class);
+		min.setDateOfPurchase(minm.getDateOfPurchase().toLocalDate());
+		min.setDateOfSale(minm.getDateOfSale().toLocalDate());
 		IncomeApyDto max = modelMapper.map(maxm, IncomeApyDto.class);
+		max.setDateOfPurchase(maxm.getDateOfPurchase().toLocalDate());
+		max.setDateOfSale(maxm.getDateOfSale().toLocalDate());
 		return new StockResponseApyDto(index.getFrom(), index.getTo(), index.getIndexs().get(0), index.getType(), min, max);
-//		return null;
 	}
 
 	@Override

@@ -1,6 +1,7 @@
 package telran.java51.communication.model;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -23,9 +24,9 @@ public class Period {
 	@Id
 	String id;
 	String index;
-	LocalDate dateOfPurchase;
+	LocalDateTime dateOfPurchase;
 	Double purchaseAmount;
-	LocalDate dateOfSale;
+	LocalDateTime dateOfSale;
 	Double saleAmount;
 	Double income;
 	Double apy;
