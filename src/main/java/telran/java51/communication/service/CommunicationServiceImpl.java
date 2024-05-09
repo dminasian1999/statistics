@@ -25,7 +25,7 @@ import telran.java51.communication.dto.StockResponseIrrDto;
 import telran.java51.communication.dto.StockResponsePeriodDto;
 import telran.java51.communication.dto.StockResponseValueCloseDto;
 import telran.java51.communication.dto.exceptions.StockNotFoundException;
-import telran.java51.communication.model.IncomeApy;
+import telran.java51.communication.model.Period;
 import telran.java51.communication.model.Stock;
 
 @Service
@@ -137,14 +137,14 @@ public class CommunicationServiceImpl implements CommunicationService {
 		LocalDateTime lastLimit=  LocalDateTime.of(index.getTo(), LocalTime.of(21, 0)); 
 		while(firstDate.isBefore(lastLimit)) {
 			if (!periodRepository.existsByIndexIgnoreCaseAndDateOfPurchaseAndDateOfSale(index.getIndexs().get(0),firstDate,lastDate) ) {
-				IncomeApy income =  stockRepository.calcIncomeForPeriod(index.getIndexs().get(0),firstDate,lastDate,1);
+				Period income =  stockRepository.calcIncomeForPeriod(index.getIndexs().get(0),firstDate,lastDate,1);
 				periodRepository.save(income);
 			}
 			firstDate = firstDate.plusDays(1);
 			lastDate = lastDate.plusDays(1);
 		}
-		IncomeApy minm = periodRepository.findFirstByIndexIgnoreCaseOrderByIncomeAsc(index.getIndexs().get(0));
-		IncomeApy maxm = periodRepository.findFirstByIndexIgnoreCaseOrderByIncomeDesc(index.getIndexs().get(0));
+		Period minm = periodRepository.findFirstByIndexIgnoreCaseOrderByIncomeAsc(index.getIndexs().get(0));
+		Period maxm = periodRepository.findFirstByIndexIgnoreCaseOrderByIncomeDesc(index.getIndexs().get(0));
 		IncomeApyDto min = modelMapper.map(minm, IncomeApyDto.class);
 		IncomeApyDto max = modelMapper.map(maxm, IncomeApyDto.class);
 		return new StockResponseApyDto(index.getFrom(), index.getTo(), index.getIndexs().get(0), index.getType(), min, max);

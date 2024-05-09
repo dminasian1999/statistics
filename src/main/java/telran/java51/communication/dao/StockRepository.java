@@ -9,7 +9,7 @@ import org.springframework.data.mongodb.repository.Aggregation;
 import org.springframework.data.repository.CrudRepository;
 
 import telran.java51.communication.dto.StatisticDto;
-import telran.java51.communication.model.IncomeApy;
+import telran.java51.communication.model.Period;
 import telran.java51.communication.model.Stock;
 
 public interface StockRepository extends CrudRepository<Stock, String> {
@@ -41,11 +41,11 @@ public interface StockRepository extends CrudRepository<Stock, String> {
 //	    "{$group:{ _id: null, first: {$first: '$close'}, last:{$last: '$close'}}}",
 //	    "{ids: '$id',$project:{index: ?0 , dateOfPurchase: ?1, purchaseAmount:'$first',dateOfSale: ?2,saleAmount: '$last' ,income:{$subtract:[{$pow:[{$divide:['$last','$first']}, ?3]}, 1]}}}"
 //	})
-//	 IncomeApy calcIncomeForPeriod(String index, LocalDateTime from, LocalDateTime to, int power);
+//	 Period calcIncomeForPeriod(String index, LocalDateTime from, LocalDateTime to, int power);
 	@Aggregation({
 		"{$match: { index: ?0, date: { $gte: ?1, $lte: ?2 } } }",
 		"{$group:{ _id: null, first: {$first: '$close'}, last:{$last: '$close'}}}",
 		"{$project:{index: ?0 , dateOfPurchase: ?1, purchaseAmount:'$first',dateOfSale: ?2,saleAmount: '$last' ,income:{$subtract:[{$pow:[{$divide:['$last','$first']}, ?3]}, 1]}}}"
 	})
-	IncomeApy calcIncomeForPeriod(String index, LocalDateTime from, LocalDateTime to, int power);
+	Period calcIncomeForPeriod(String index, LocalDateTime from, LocalDateTime to, int power);
 }

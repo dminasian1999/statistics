@@ -4,10 +4,10 @@ import java.time.LocalDateTime;
 
 import org.springframework.data.repository.CrudRepository;
 
-import telran.java51.communication.model.IncomeApy;
+import telran.java51.communication.model.Period;
 
 
-public interface PeriodRepository extends CrudRepository<IncomeApy, String> {
+public interface PeriodRepository extends CrudRepository<Period, String> {
 
 	//TODO fix this
 //	@Aggregation({
@@ -19,7 +19,7 @@ public interface PeriodRepository extends CrudRepository<IncomeApy, String> {
     boolean existsByIndexIgnoreCaseAndDateOfPurchaseAndDateOfSale(String index, LocalDateTime dateOfPurchase, LocalDateTime dateOfSale);
 
 	 
-	 IncomeApy findFirstByIndexIgnoreCaseOrderByIncomeAsc(String index);
+	 Period findFirstByIndexIgnoreCaseOrderByIncomeAsc(String index);
 
-	 IncomeApy findFirstByIndexIgnoreCaseOrderByIncomeDesc(String index);
+	 Period findFirstByIndexIgnoreCaseOrderByIncomeDesc(String index);
 }

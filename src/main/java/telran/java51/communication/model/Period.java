@@ -3,6 +3,7 @@ package telran.java51.communication.model;
 import java.time.LocalDate;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -13,11 +14,11 @@ import lombok.ToString;
 
 @Getter
 @Setter
-//@NoArgsConstructor
 @AllArgsConstructor
 @ToString
+@Document(collection = "periods")
 //@EqualsAndHashCode(of =  {"index","dateOfPurchase" })
-public class IncomeApy {
+public class Period {
 	
 	@Id
 	String id;
