@@ -1,19 +1,23 @@
 package telran.java51.communication.dao;
 
+import java.time.LocalDateTime;
+
 import org.springframework.data.repository.CrudRepository;
 
 import telran.java51.communication.model.IncomeApy;
-import telran.java51.communication.model.Stock;
-
-import java.util.List;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 
 public interface PeriodRepository extends CrudRepository<IncomeApy, String> {
 
 	//TODO fix this
-	 boolean existsByIndexAndDateOfPurchaseAndDateOfSale(String index, LocalDateTime firstDate, LocalDateTime lastDate);
+//	@Aggregation({
+//	    "{$match: { $elemMatch: { index: ?0, dateOfPurchase: ISODate({$toString: ?1}), dateOfSale: ISODate({$toString: ?2}) }}}",
+//	    "{$group: { _id: null, count: { 'exists' } }}"
+//	})
+	
+//	@Query("{'index': ?0, 'dateOfPurchase': ?1, 'dateOfSale': ?2}")	
+    boolean existsByIndexIgnoreCaseAndDateOfPurchaseAndDateOfSale(String index, LocalDateTime dateOfPurchase, LocalDateTime dateOfSale);
+
 	 
 	 IncomeApy findFirstByIndexIgnoreCaseOrderByIncomeAsc(String index);
 
