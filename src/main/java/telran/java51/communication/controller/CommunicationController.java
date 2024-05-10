@@ -66,7 +66,7 @@ public class CommunicationController  {
 	}
 
 	@PostMapping("/index/apy_all")
-	public StockResponseApyAllDto calcIncomeWithApyAllDate(@RequestBody StockDto index) {
+	public List<StockResponseApyAllDto>  calcIncomeWithApyAllDate(@RequestBody StockDto index) {
 		return communicationService.calcIncomeWithApyAllDate(index);
 	}
 

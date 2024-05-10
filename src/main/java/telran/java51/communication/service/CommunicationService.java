@@ -28,7 +28,7 @@ public interface CommunicationService {
 	
 	StockResponseApyDto calcIncomeWithApy (StockDto index);
 	
-	StockResponseApyAllDto calcIncomeWithApyAllDate (StockDto index); 
+	List<StockResponseApyAllDto>  calcIncomeWithApyAllDate (StockDto index); 
 	
 	StockResponseIrrDto calcIncomeWithIrr(StockDto index);
 	

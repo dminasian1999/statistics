@@ -1,5 +1,7 @@
 package telran.java51.communication.dto;
 
+import java.time.LocalDate;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,9 +11,17 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class StatisticDto {
+public class IncomeDto {
 
-	String id;
 	Double income;
+	LocalDate from;
+	LocalDate to;
+    String source;
+    String type;
+    double max;
+    double mean;
+    double median;
+    double min;
+    double std;
 
 }

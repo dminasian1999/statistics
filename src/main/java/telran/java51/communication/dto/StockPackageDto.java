@@ -1,5 +1,6 @@
 package telran.java51.communication.dto;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -10,8 +11,8 @@ public class StockPackageDto {
 
 	List<String> indexs;
 	List<Integer> amount;
-	LocalTime from;
-	LocalTime to;
+	LocalDate from;
+	LocalDate to;
 	String type;
 	Integer quantity;
 

@@ -8,8 +8,8 @@ import java.util.stream.Stream;
 import org.springframework.data.mongodb.repository.Aggregation;
 import org.springframework.data.repository.CrudRepository;
 
-import telran.java51.communication.dto.StatisticDto;
-import telran.java51.communication.model.Period;
+import telran.java51.communication.dto.IncomeDto;
+import telran.java51.communication.model.PeriodStats;
 import telran.java51.communication.model.Stock;
 
 public interface StockRepository extends CrudRepository<Stock, String> {
@@ -28,7 +28,7 @@ public interface StockRepository extends CrudRepository<Stock, String> {
 //	    "{$match: { index: ?0, date: { $gte: ?1, $lte: ?2 } } }",
 //	    "{$group:{ _id: null , max: {$max: '$close'}, min: {$min: '$close'}, mean: {$avg: '$close'}, median:{$median:{input: '$close', method: 'approximate'}} ,std:{$stdDevSamp: '$close'} }}"
 //	})
-//	StatisticDto findByIndexAndDateBetween(String index, LocalDate from, LocalDate to);
+//	IncomeDto findByIndexAndDateBetween(String index, LocalDate from, LocalDate to);
 	
 	@Aggregation({
 	    "{$match: { index: ?0, date: { $gte: ?1, $lte: ?2 } } }",
@@ -39,7 +39,14 @@ public interface StockRepository extends CrudRepository<Stock, String> {
 	@Aggregation({
 		"{$match: { index: ?0, date: { $gte: ?1, $lte: ?2 } } }",
 		"{$group:{ _id: null, first: {$first: '$close'}, last:{$last: '$close'}}}",
-		"{$project:{index: ?0 , dateOfPurchase: ?1, purchaseAmount:'$first',dateOfSale: ?2,saleAmount: '$last' ,income:{$subtract:[{$pow:[{$divide:['$last','$first']}, ?3]}, 1]}}}"
+		"{$project:{index: ?0 , dateOfPurchase: ?1, purchaseAmount:'$first',dateOfSale: ?2,saleAmount: '$last', income:{$subtract: ['$last','$first']}}}"
 	})
-	Period calcIncomeForPeriod(String index, LocalDateTime from, LocalDateTime to, int power);
+	PeriodStats calcIncomeForPeriod(String index, LocalDateTime from, LocalDateTime to);
+	
+	@Aggregation({
+		"{$match: { index: ?0, date: { $gte: ?1, $lte: ?2 } } }",
+		"{$group:{ _id: null, first: {$first: '$close'}, last:{$last: '$close'}}}",
+		"{$project:{index: ?0 , dateOfPurchase: ?1, purchaseAmount:'$first',dateOfSale: ?2,saleAmount: '$last', income:{$subtract: ['$last','$first']} ,apy:{$subtract:[{$pow:[{$divide:[?3,'$first']}, 1]}, 1]}}}"
+	})
+	PeriodStats calcIncomeForPeriodWithApy(String index, LocalDateTime from, LocalDateTime to, double apyYear);
 }
