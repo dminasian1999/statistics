@@ -68,7 +68,7 @@ public class CommunicationServiceImpl implements CommunicationService {
 
 	@Override
 	public List<String> getAllIndexes() {
-		return stockRepository.findDistinctByIndex().toList();
+		return stockRepository.getIndexes().toList();
 	}
 
 	@Override
@@ -76,16 +76,10 @@ public class CommunicationServiceImpl implements CommunicationService {
 //		// TODO plural
 //		// TODO exceptions if .getTo() is in future	
 		calculatePeriodIncomeHandler(index,index.getIndexs().get(0));
-		IncomeDto st =  periodRepository.findByIndexAndDateBetweenPeriod(index.getIndexs(), index.getFrom(), index.getTo());
+		IncomeDto st =  periodRepository.calcStats(index.getIndexs().get(0), index.getFrom(), index.getTo());
 		return new StockResponsePeriodDto(index.getFrom(), index.getTo(), index.getIndexs().get(0),String.valueOf(index.getQuantity()+" "+index.getType()) ,
 				st.getMax(), st.getMean(), st.getMedian(), st.getMin(), st.getStd());
 	}
-
-//	private double calculateIncome(double first, double last, int power) {
-//		double s = last/first;
-//        double result = Math.pow(s, 1.0 / power);
-//        return result - 1;
-//	}
 
 	private LocalDateTime[] getPeriodDates(StockDto index) {
 		LocalDateTime[] res = new LocalDateTime[2];
@@ -118,17 +112,47 @@ public class CommunicationServiceImpl implements CommunicationService {
 
 	@Override
 	public List<StockResponseValueCloseDto> getAllValueCloseBetween(StockDto index) {
-		return null;
+		//TODO fix times ,min,maxDates
+		calculatePeriodIncomeHandler(index,index.getIndexs().get(0));		
+		return periodRepository.findByIndexIgnoreCaseAndDateOfPurchaseBetween(index.getIndexs().get(0), index.getFrom(), index.getTo())
+				.map(p -> {
+	                String type = index.getQuantity() + " " + index.getType();
+	                type = index.getQuantity() > 1 ? type : type.substring(0, type.length() - 1);
+	                return new StockResponseValueCloseDto(
+	                        p.getDateOfPurchase().toLocalDate(),
+	                        p.getDateOfSale().toLocalDate(),
+	                        index.getIndexs().get(0),
+	                        type,
+	                        p.getDateOfPurchase().toLocalDate(),
+	                        p.getDateOfSale().toLocalDate(),
+	                        p.getPurchaseAmount(),
+	                        p.getSaleAmount(),
+	                        p.getIncome(),
+	                        stockRepository.getClosesByIndexAndDateBetween(index.getIndexs().get(0), p.getDateOfPurchase().toLocalDate(), p.getDateOfSale().toLocalDate())
+	                );
+	            })
+				.toList();
 	}
 
 	@Override
 	public StockResponsePeriodDto calcSumPackage(StockPackageDto indexPackage) {
-		//TODO fix ,multiple amounts
 		StockDto index = new StockDto(indexPackage.getIndexs(), indexPackage.getType(), indexPackage.getQuantity(), indexPackage.getFrom(), indexPackage.getTo());
-		indexPackage.getIndexs().stream().forEach(i-> calculatePeriodIncomeHandler(index,i));
-		IncomeDto st =  periodRepository.findByIndexAndDateBetweenPeriod(index.getIndexs(), index.getFrom(), index.getTo());
+		indexPackage.getIndexs().stream().forEach(i-> calculatePeriodIncomeHandler(index,i));		
+		double max =0;
+		double mean =0;
+		double median=0;
+		double min =0;
+		double std =0; 
+		for (int i = 0; i < indexPackage.getAmount().size(); i++) {
+			IncomeDto income =periodRepository.calcStatsSum(indexPackage.getIndexs().get(i) , index.getFrom(), index.getTo(),Double.valueOf(indexPackage.getAmount().get(i)));
+			 max +=  income.getMax();
+			 mean += income.getMean();
+			 median += income.getMedian();
+			 min +=  income.getMin();
+			 std += income.getStd();			
+		}	
 		return new StockResponsePeriodDto(indexPackage.getFrom(), indexPackage.getTo(), String.valueOf(indexPackage.getIndexs()), String.valueOf(index.getQuantity()+" "+index.getType()) ,
-				st.getMax(), st.getMean(), st.getMedian(), st.getMin(), st.getStd());
+				max, mean, median, min, std);
 	}
 
 	@Override
@@ -209,8 +233,13 @@ public class CommunicationServiceImpl implements CommunicationService {
 
 	@Override
 	public boolean deleteAllHistoryForCompany(String index) {
-		// TODO Auto-generated method stub
-		return false;
+		try {
+			periodRepository.deleteAllByIndexIgnoreCase(index);
+			stockRepository.deleteAllByIndexIgnoreCase(index);
+			return true;
+		} catch (Exception e) {
+			return false;
+		} 
 	}
 
 }
