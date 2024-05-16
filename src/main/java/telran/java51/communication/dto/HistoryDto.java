@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Getter
 
-public class StockHistoryDto {
+public class HistoryDto {
 	String source ;
     LocalDate fromData;
     LocalDate toData;

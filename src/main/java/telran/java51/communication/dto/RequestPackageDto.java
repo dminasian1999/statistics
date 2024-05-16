@@ -6,12 +6,13 @@ import java.util.List;
 import lombok.Getter;
 
 @Getter
-public class StockResponseIrrDto {
+public class RequestPackageDto {
 
+	List<String> indexs;
+	List<Integer> amount;
 	LocalDate from;
 	LocalDate to;
-	List<String> source;
 	String type;
-	IncomeIrrDto minIncome;
-	IncomeIrrDto maxIncome;
+	Integer quantity;
+
 }

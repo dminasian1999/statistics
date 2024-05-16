@@ -13,17 +13,16 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class IncomeDto {
+public class StatisticalData {
 
-//	Double income;
 	LocalDate from;
 	LocalDate to;
     String source;
     String type;
-    double max;
-    double mean;
-    double median;
-    double min;
-    double std;
+    Double max;
+    Double mean;
+    Double median;
+    Double min;
+    Double std;
 
 }

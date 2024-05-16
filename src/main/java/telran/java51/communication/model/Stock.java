@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,7 +15,8 @@ import lombok.ToString;
 @Getter
 @ToString
 @Document(collection = "market")
-@EqualsAndHashCode(of = "id")
+//@EqualsAndHashCode(of = "id")
+@AllArgsConstructor
 public class Stock {
 	@Id
 	String id;

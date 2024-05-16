@@ -1,6 +1,7 @@
 package telran.java51.communication.dto;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,16 +10,12 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class StockResponseApyAllDto {
+public class ResponseIrrDto {
 
-	String source;
-	LocalDate historyFrom;
-	LocalDate historyTo;
-	String type;
 	LocalDate from;
 	LocalDate to;
-	Double purchaseAmount;
-	Double saleAmount;
-	Double income;
-	Double apy;
+	List<String> source;
+	String type;
+	IncomeIrrDto minIncome;
+	IncomeIrrDto maxIncome;
 }

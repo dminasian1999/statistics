@@ -7,6 +7,7 @@ import java.util.stream.Stream;
 
 import org.springframework.data.mongodb.repository.Aggregation;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
 
 import telran.java51.communication.model.PeriodStats;
 import telran.java51.communication.model.Stock;
@@ -20,7 +21,7 @@ public interface StockRepository extends CrudRepository<Stock, String> {
 	Stock findFirstByIndexIgnoreCaseOrderByDateDesc(String index);
 
 	@Aggregation("{ $group: { _id: '$index' }}")
-	Stream<String> getIndexes();
+	List<String> getIndexes();
 
 	@Aggregation({ "{$match: { index: ?0, date: { $gte: ?1, $lte: ?2 } } }", "{$group:{ _id: '$close'}}" })
 	List<Double> getClosesByIndexAndDateBetween(String index, LocalDate from, LocalDate to);

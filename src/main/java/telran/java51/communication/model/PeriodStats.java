@@ -26,5 +26,6 @@ public class PeriodStats {
 	Double saleAmount;
 	Double income;
 	Double apy;
+	Double irr;
 
 }
