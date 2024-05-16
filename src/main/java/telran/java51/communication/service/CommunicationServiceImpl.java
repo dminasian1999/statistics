@@ -80,7 +80,7 @@ public class CommunicationServiceImpl implements CommunicationService {
 	@Override
 	public HistoryDto getTimeHistoryForIndex(String index) {
 		if (!stockRepository.existsByIndexIgnoreCase(index)) {
-			throw new StockNotFoundException();
+			throw new StockNotFoundException("Stock not found: "+index);
 		}
 		LocalDate from = stockRepository.findFirstByIndexIgnoreCaseOrderByDateAsc(index).getDate().minusDays(1);
 		LocalDate to = stockRepository.findFirstByIndexIgnoreCaseOrderByDateDesc(index).getDate().minusDays(1);

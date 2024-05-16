@@ -1,8 +1,6 @@
 package telran.java51;
-
-import static org.assertj.core.api.Assertions.assertThatNullPointerException;
-import static org.hamcrest.CoreMatchers.equalToObject;
-import static  org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
@@ -10,6 +8,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.regex.Pattern;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -51,6 +50,8 @@ class StatisticsServiceApplicationTests {
 		stocks.forEach(t -> stockRepository.save(t));		
 		List<String > indexes = stocks.stream().map(t -> t.getIndex()).toList();
 		when(stockRepository.getIndexes()).thenReturn(indexes);
+        Pattern pattern = Pattern.compile("FIRST|SECOND|THIRD|FOURTH|FIFTH", Pattern.CASE_INSENSITIVE);
+		when(stockRepository.existsByIndexIgnoreCase(argThat(arg -> pattern.matcher(arg).matches()))).thenReturn(true);
 	}
 
 	@Test
@@ -64,8 +65,9 @@ class StatisticsServiceApplicationTests {
 
 	@Test
 	void testGetTimeHistoryForIndex() {
-		//TODO Issue reason is exception is serialized
-//		assertThatNullPointerException(communication.getTimeHistoryForIndex("First"));
+		//TODO to be continued
+        StockNotFoundException exception =  assertThrows(StockNotFoundException.class, ()->communication.getTimeHistoryForIndex("SIXTH"));
+		assertEquals("Stock not found: " + "SIXTH", exception.getMessage());
 	}
 
 	@Test
