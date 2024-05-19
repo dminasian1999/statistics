@@ -46,7 +46,7 @@ public class CommunicationController  {
 	}
 
 	@PostMapping("/index")
-	public ResponsePeriodDto periodBeetwin(@RequestBody RequestDto index) {
+	public List<ResponsePeriodDto> periodBeetwin(@RequestBody RequestDto index) {
 		return communicationService.periodBeetwin(index);
 	}
 

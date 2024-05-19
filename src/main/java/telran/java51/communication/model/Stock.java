@@ -8,6 +8,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
@@ -15,8 +16,9 @@ import lombok.ToString;
 @Getter
 @ToString
 @Document(collection = "market")
-//@EqualsAndHashCode(of = "id")
+@EqualsAndHashCode(of = "id")
 @AllArgsConstructor
+@NoArgsConstructor
 public class Stock {
 	@Id
 	String id;

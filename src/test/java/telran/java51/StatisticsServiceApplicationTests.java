@@ -22,6 +22,7 @@ import telran.java51.communication.dao.StockInfoRepository;
 import telran.java51.communication.dao.StockRepository;
 import telran.java51.communication.dto.exceptions.StockNotFoundException;
 import telran.java51.communication.model.Stock;
+import telran.java51.communication.model.StockInfo;
 import telran.java51.communication.service.CommunicationService;
 import telran.java51.communication.service.CommunicationServiceImpl;
 
@@ -34,6 +35,7 @@ class StatisticsServiceApplicationTests {
 	@Mock
 	StockRepository stockRepository ;
 	PeriodRepository periodRepository;
+	@Mock
 	StockInfoRepository stockInfoRepository;
 	ReadWriteLock rwl = new ReentrantReadWriteLock();
 
@@ -41,15 +43,20 @@ class StatisticsServiceApplicationTests {
     void setUp() throws Exception {
 		communication =  new CommunicationServiceImpl(modelMapper, stockRepository, periodRepository, stockInfoRepository);
 		List<Stock> stocks = (Arrays.asList(
-			new Stock("FIRST", LocalDate.of(1999, 10, 21), 0.0, 0.0, 0.0, 10.0, 0.0, 0),
+			new Stock("FIRST", LocalDate.of(1999, 10, 10), 0.0, 0.0, 0.0, 10.0, 0.0, 0),
+			new Stock("FIRST", LocalDate.of(1999, 10, 11), 0.0, 0.0, 0.0, 10.0, 0.0, 1),
+			new Stock("FIRST", LocalDate.of(1999, 10, 12), 0.0, 0.0, 0.0, 10.0, 0.0, 2),
 			new Stock("SECOND", LocalDate.of(2000, 10, 21), 0.0, 0.0, 0.0, 20.0, 0.0, 0),
 			new Stock("THIRD", LocalDate.of(2001, 10, 21), 0.0, 0.0, 0.0, 30.0, 0.0, 0),
 			new Stock("FORTH", LocalDate.of(2002, 10, 21), 0.0, 0.0, 0.0, 40.0, 0.0, 0),
 			new Stock("FIFTH", LocalDate.of(2003, 10, 21),  0.0, 0.0, 0.0, 50.0, 0.0, 0)
 			));
-		stocks.forEach(t -> stockRepository.save(t));		
+		stocks.forEach(t -> {
+					stockRepository.save(t);
+					stockInfoRepository.save(new StockInfo(t.getIndex()));	
+		});
 		List<String > indexes = stocks.stream().map(t -> t.getIndex()).toList();
-		when(stockRepository.getIndexes()).thenReturn(indexes);
+		when(stockInfoRepository.getIndexes()).thenReturn(indexes);
         Pattern pattern = Pattern.compile("FIRST|SECOND|THIRD|FOURTH|FIFTH", Pattern.CASE_INSENSITIVE);
 		when(stockRepository.existsByIndexIgnoreCase(argThat(arg -> pattern.matcher(arg).matches()))).thenReturn(true);
 	}
@@ -68,6 +75,7 @@ class StatisticsServiceApplicationTests {
 		//TODO to be continued
         StockNotFoundException exception =  assertThrows(StockNotFoundException.class, ()->communication.getTimeHistoryForIndex("SIXTH"));
 		assertEquals("Stock not found: " + "SIXTH", exception.getMessage());
+		
 	}
 
 	@Test

@@ -21,10 +21,13 @@ public class PeriodStats {
 	String id;
 	String index;
 	LocalDateTime dateOfPurchase;
-	Double purchaseAmount;
+	double purchaseAmount;
 	LocalDateTime dateOfSale;
-	Double saleAmount;
-	Double income;
+	double saleAmount;
+	double income;
+	
+	String type;
+	
 	Double apy;
 	Double irr;
 
