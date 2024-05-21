@@ -2,6 +2,7 @@ package telran.java51.communication.controller;
 
 import java.util.List;
 
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,6 +27,7 @@ import telran.java51.communication.service.CommunicationService;
 @RestController
 @RequestMapping("/communication")
 @RequiredArgsConstructor
+@CrossOrigin
 public class CommunicationController  {
 
 	final CommunicationService communicationService;

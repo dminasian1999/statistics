@@ -5,9 +5,11 @@ import java.io.FileReader;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -35,7 +37,6 @@ import telran.java51.communication.model.PeriodStats;
 import telran.java51.communication.model.Stock;
 import telran.java51.communication.model.StockInfo;
 
-// TODO to make id of PeriodStats "index,date,type" ->  faster search in db ?
 @Service
 @RequiredArgsConstructor
 public class CommunicationServiceImpl implements CommunicationService {
@@ -44,9 +45,12 @@ public class CommunicationServiceImpl implements CommunicationService {
 	final StockRepository stockRepository;
 	final PeriodRepository periodRepository;
 	final StockInfoRepository stockInfoRepository;
+	ExecutorService executor;
+
 
 	@Override
 	public boolean addHistoryWithFile(String index, String csv) {
+		// TODO false name exeption,no duplicates
 
 		try (BufferedReader br = new BufferedReader(new FileReader(csv))) {
 			StockInfo stockInfo = stockInfoRepository.findById(index)
@@ -88,14 +92,13 @@ public class CommunicationServiceImpl implements CommunicationService {
 
 	@Override
 	public List<ResponsePeriodDto> periodBeetwin(RequestDto index) {
-		return index.getIndexs().stream()
-				.map(i->{
-					calculatePeriodIncomeHandler(index, i);
-					ResponsePeriodDto st = periodRepository.calcAnalysis(i, index.getFrom(), index.getTo());
-					return new ResponsePeriodDto(index.getFrom(), index.getTo(), index.getIndexs().get(0),
-							getPeriodType(index.getType(), index.getQuantity()), 
-							st.getMax(), st.getMean(), st.getMedian(),
-							st.getMin(), st.getStd());}).toList();
+		return index.getIndexs().stream().map(i -> {
+			calculatePeriodIncomeHandler(index, i);
+			ResponsePeriodDto st = periodRepository.calcAnalysis(i, index.getFrom(), index.getTo());
+			return new ResponsePeriodDto(index.getFrom(), index.getTo(), index.getIndexs().get(0),
+					getPeriodType(index.getType(), index.getQuantity()), st.getMax(), st.getMean(), st.getMedian(),
+					st.getMin(), st.getStd());
+		}).toList();
 	}
 
 	@Override
@@ -146,10 +149,12 @@ public class CommunicationServiceImpl implements CommunicationService {
 		calculatePeriodIncomeHandler(index, index.getIndexs().get(0));
 		String type = getPeriodType(index.getType(), index.getQuantity());
 		PeriodStats minm = periodRepository.findFirstByIndexIgnoreCaseAndTypeAndDateOfPurchaseBetweenOrderByIncomeAsc(
-				index.getIndexs().get(0), type, index.getFrom(), index.getTo());
+				index.getIndexs().get(0), type, LocalDateTime.of(index.getFrom(), LocalTime.of(21, 00)),
+				LocalDateTime.of(index.getTo(), LocalTime.of(21, 00)));
 		PeriodStats maxm = periodRepository.findFirstByIndexIgnoreCaseAndTypeAndDateOfPurchaseBetweenOrderByIncomeDesc(
-				index.getIndexs().get(0), type, index.getFrom(), index.getTo());
-
+				index.getIndexs().get(0), type,LocalDateTime.of(index.getFrom(), LocalTime.of(21, 00)),
+				LocalDateTime.of(index.getTo(), LocalTime.of(21, 00)));
+		
 		IncomeApyDto min = modelMapper.map(minm, IncomeApyDto.class);
 		min.setDateOfPurchase(minm.getDateOfPurchase().toLocalDate());
 		min.setDateOfSale(minm.getDateOfSale().toLocalDate());
@@ -163,7 +168,8 @@ public class CommunicationServiceImpl implements CommunicationService {
 	@Override
 	public List<ResponseApyAllDto> calcIncomeWithApyAllDate(RequestDto index) {
 		calculatePeriodIncomeHandler(index, index.getIndexs().get(0));
-		return periodRepository.findByIndexIgnoreCaseAndTypeAndDateOfPurchaseBetween(index.getIndexs().get(0), getPeriodType(index.getType(), index.getQuantity()),
+		return periodRepository.findByIndexIgnoreCaseAndTypeAndDateOfPurchaseBetween(index.getIndexs().get(0),
+				getPeriodType(index.getType(), index.getQuantity()),
 				LocalDateTime.of(index.getFrom(), LocalTime.of(21, 00)),
 				LocalDateTime.of(index.getTo(), LocalTime.of(21, 00))).map(p -> {
 					return new ResponseApyAllDto(index.getIndexs().get(0), index.getFrom(), index.getTo(), p.getType(),
@@ -180,11 +186,13 @@ public class CommunicationServiceImpl implements CommunicationService {
 			String type = index.getQuantity() + " " + index.getType();
 			type = index.getQuantity() > 1 ? type : type.substring(0, type.length() - 1);
 			PeriodStats minm = periodRepository
-					.findFirstByIndexIgnoreCaseAndTypeAndDateOfPurchaseBetweenOrderByIncomeAsc(i, type, index.getFrom(),
-							index.getTo());
+					.findFirstByIndexIgnoreCaseAndTypeAndDateOfPurchaseBetweenOrderByIncomeAsc(
+							i, type,LocalDateTime.of(index.getFrom(), LocalTime.of(21, 00)),
+							LocalDateTime.of(index.getTo(), LocalTime.of(21, 00)));
 			PeriodStats maxm = periodRepository
-					.findFirstByIndexIgnoreCaseAndTypeAndDateOfPurchaseBetweenOrderByIncomeDesc(i, type,
-							index.getFrom(), index.getTo());
+					.findFirstByIndexIgnoreCaseAndTypeAndDateOfPurchaseBetweenOrderByIncomeDesc(
+							i, type,LocalDateTime.of(index.getFrom(), LocalTime.of(21, 00)),
+							LocalDateTime.of(index.getTo(), LocalTime.of(21, 00)));
 			IncomeIrrDto min = modelMapper.map(minm, IncomeIrrDto.class);
 			min.setDateOfPurchase(minm.getDateOfPurchase().toLocalDate());
 			min.setDateOfSale(minm.getDateOfSale().toLocalDate());
@@ -290,7 +298,6 @@ public class CommunicationServiceImpl implements CommunicationService {
 			throw new StockNotFoundException("Stock not found: " + index);
 		}
 	}
-
 	private void calculatePeriodIncomeHandler(RequestDto index, String indexName) {
 		checkIndex(indexName);
 		LocalDateTime[] periodTimes = getPeriodDates(index);
@@ -299,21 +306,21 @@ public class CommunicationServiceImpl implements CommunicationService {
 		LocalDateTime lastLimit = LocalDateTime.of(index.getTo(), LocalTime.of(21, 0));
 		ckeckTimeBoundary(indexName, lastDate, lastLimit, firstDate);
 		String type = getPeriodType(index.getType(), index.getQuantity());
-		PeriodStats income;
-		while (firstDate.isBefore(lastLimit)) {
-			if (!periodRepository.existsByIndexIgnoreCaseAndDateOfPurchaseAndType(indexName, firstDate, type)) {
-				if (Period.between(firstDate.toLocalDate(), lastDate.toLocalDate()).getYears() < 0) {
-					income = stockRepository.calcIncomeForPeriod(indexName, firstDate, lastDate, type);
-				} else {
-					double apyIncome = stockRepository
-							.calcIncomeForPeriod(indexName, firstDate, firstDate.plusYears(1), type).getSaleAmount();
-					income = stockRepository.calcIncomeForPeriodWithApy(indexName, firstDate, lastDate, apyIncome,
-							type);
-				}
-				periodRepository.save(income);
-			}
-			firstDate = firstDate.plusDays(1);
-			lastDate = lastDate.plusDays(1);
+		int size = 0;
+		for (firstDate = periodTimes[0]; firstDate.isBefore(lastLimit); firstDate = firstDate.plusDays(1)) size++;
+		Calculator[] calcs = new Calculator[size];
+		for (firstDate = periodTimes[0]; firstDate.isBefore(lastLimit); firstDate = firstDate.plusDays(1),lastDate = lastDate.plusDays(1)) {
+			calcs[--size]= new Calculator(stockRepository, periodRepository, indexName, type, firstDate, lastDate);
+		}	
+	    executor = Executors.newWorkStealingPool();
+		for (int i = 0; i < size; i++) {
+			executor.execute(calcs[i]);
+		}
+		try {
+			executor.shutdown();
+			executor.awaitTermination(30, TimeUnit.SECONDS);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
 		}
 	}
 
@@ -327,6 +334,9 @@ public class CommunicationServiceImpl implements CommunicationService {
 		}
 		if (firstDate.toLocalDate().isBefore(oldestDate)) {
 			throw new OutOfBoundaryException("Oldest date for '" + indexName + "' is: " + oldestDate + "");
+		}
+		if (lastDate.toLocalDate().isBefore(firstDate.toLocalDate())) {
+			throw new OutOfBoundaryException("Reversed dates!");
 		}
 	}
 

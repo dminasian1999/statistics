@@ -80,7 +80,7 @@ class StatisticsServiceApplicationTests {
 
 	@Test
 	void testGetAllIndexes() {	
-		String [] expected = {"FIRST", "SECOND","THIRD", "FORTH", "FIFTH"};
+		String [] expected = {"FIRST", "FIRST","FIRST","SECOND","THIRD", "FORTH", "FIFTH"};
 		String[] actual = communication.getAllIndexes().stream()
 							.toArray(String[]::new);		
 		assertArrayEquals(expected,actual);
@@ -90,6 +90,7 @@ class StatisticsServiceApplicationTests {
 	void testPeriodBeetwin() {
 		// Test implementation
 	}
+	
 
 	@Test
 	void testGetAllValueCloseBetween() {

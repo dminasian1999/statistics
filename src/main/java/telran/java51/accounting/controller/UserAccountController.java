@@ -4,6 +4,7 @@ import java.security.Principal;
 import java.util.Base64;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,6 +27,7 @@ import telran.java51.accounting.service.UserAccountService;
 @RestController
 @RequestMapping("/account")
 @RequiredArgsConstructor
+@CrossOrigin
 public class UserAccountController {
 
 	final UserAccountService userAccountService;
