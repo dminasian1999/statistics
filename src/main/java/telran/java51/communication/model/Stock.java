@@ -2,7 +2,6 @@ package telran.java51.communication.model;
 
 import java.time.LocalDate;
 
-import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import lombok.AllArgsConstructor;
@@ -20,7 +19,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Stock {
-	@Id
+	
 	String id;
 	String index;
 	LocalDate date;
@@ -45,5 +44,3 @@ public class Stock {
 	
 	
 }
-
-
